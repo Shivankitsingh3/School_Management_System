@@ -1,5 +1,6 @@
+from django import forms
+from django.contrib.auth.admin import UserAdmin
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import CustomUser
 from student.models import Student
 from teacher.models import Teacher
@@ -27,51 +28,52 @@ class PrincipalInline(admin.StackedInline):
     fields = ['registration_id']
 
 
-@admin.register(CustomUser)
-class CustomUserAdmin(BaseUserAdmin):
-    ordering = ('email',)
+class CustomUserCreationForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ("email", "name", "role", "dob", "mobile", "city")
 
-    list_display = ['id', 'name', 'email', 'role', 'is_active']
-    readonly_fields = ['id', 'created_at', 'updated_at']
-    list_filter = ['role', 'is_active', 'city']
-    search_fields = ['name', 'email', 'mobile']
+    password1 = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput)
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get("password1") != cleaned.get("password2"):
+            raise forms.ValidationError("Passwords do not match")
+        return cleaned
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password1"])
+        if commit:
+            user.save()
+        return user
+
+
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+
+    add_form = CustomUserCreationForm
+
+    list_display = ("email", "name", "role", "is_staff")
+    ordering = ("email",)
+    search_fields = ("email", "name")
 
     fieldsets = (
-        ('Personal Information', {
-            'fields': ('name', 'email', 'password', 'role', 'dob', 'mobile', 'city')
-        }),
-        ('Status', {
-            'fields': ('is_active', 'is_staff', 'is_superuser')
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-        }),
+        (None, {"fields": ("email", "password")}),
+        ("Personal", {"fields": ("name", "role", "dob", "mobile", "city")}),
+        ("Permissions", {"fields": ("is_staff", "is_active", "is_superuser")}),
     )
 
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'name', 'password1', 'password2', 'role', 'dob', 'mobile', 'city', 'is_active'),
-            'description': 'Enter the same password in both fields.'
-        }),
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("email", "name", "role", "dob", "mobile", "city", "password1", "password2"),
+            },
+        ),
     )
 
-    def get_inlines(self, request, obj=None):
-        if obj:
-            if obj.role == 'student':
-                return [StudentInline]
-            elif obj.role == 'teacher':
-                return [TeacherInline]
-            elif obj.role == 'principal':
-                return [PrincipalInline]
-        return []
 
-    def save_model(self, request, obj, form, change):
-        if not change:
-            if 'password1' in form.cleaned_data:
-                obj.set_password(form.cleaned_data['password1'])
-        else:
-            if 'password' in form.changed_data:
-                obj.set_password(obj.password)
-
-        super().save_model(request, obj, form, change)
+admin.site.register(CustomUser, CustomUserAdmin)

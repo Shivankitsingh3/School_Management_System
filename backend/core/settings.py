@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'school-management-system-1mir.onrender.com',
+    'https://school-management-system-pi-lac.vercel.app/',
 ]
 
 
@@ -178,7 +179,7 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
-    'https://school-management-system-1mir.onrender.com',
+    'https://school-management-system-pi-lac.vercel.app/',
 ]
 
 CORS_ALLOW_CREDENTIALS = True

@@ -14,6 +14,7 @@ from decouple import config
 from pathlib import Path
 from datetime import timedelta
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -89,21 +90,16 @@ WSGI_APPLICATION = 'core.wsgi.application'
 ASGI_APPLICATION = 'core.asgi.application'
 
 
-
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sms_react',
-        'USER': 'postgres',
-        'PASSWORD': '12345',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        dj_database_url.parse(os.getenv("DATABASE_URL"))
     }
 }
 
+DATABASES['default']['CONN_MAX_AGE'] = 600
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -181,7 +177,6 @@ SIMPLE_JWT = {
 }
 
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
@@ -218,15 +213,14 @@ MEDIAFILES_LOCATION = 'media'
 STATICFILES_LOCATION = 'static'
 
 
-
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
-ALLOWED_UPLOAD_EXTENSIONS = ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png', 'xlsx', 'xls']
+ALLOWED_UPLOAD_EXTENSIONS = ['pdf', 'doc', 'docx',
+                             'txt', 'jpg', 'jpeg', 'png', 'xlsx', 'xls']
 
 
 MEDIA_URL = f'https://{config("AWS_STORAGE_BUCKET_NAME")}.s3.ap-south-1.amazonaws.com/'
-
 
 
 LOGS_DIR = os.path.join(BASE_DIR, 'logs')
@@ -284,7 +278,6 @@ LOGGING = {
         },
     },
 }
-
 
 
 SPECTACULAR_SETTINGS = {

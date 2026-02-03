@@ -1,52 +1,11 @@
 services:
   - type: web
-    name: school-management-system-backend
+    name: School_Management_System
     env: python
     plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: bash start.sh
-
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
-
-      # Django
-      - key: DEBUG
-        value: "False"
-      - key: ALLOWED_HOSTS
-        value: "*.onrender.com"
-      - key: CORS_ALLOWED_ORIGINS
-        value: "*"
-      - key: FRONTEND_URL
-        value: "http://localhost:5173"
-
-      - key: SECRET_KEY
-        value: "PASTE_YOUR_SECRET_KEY"
-
-      - key: DATABASE_URL
-        value: "PASTE_YOUR_RENDER_DATABASE_URL"
-
-      # Email
-      - key: EMAIL_HOST
-        value: "smtp.gmail.com"
-      - key: EMAIL_PORT
-        value: "587"
-      - key: EMAIL_HOST_USER
-        value: "singhshivankit76@gmail.com"
-      - key: EMAIL_HOST_PASSWORD
-        value: "ljlr tpzc jajr zmef"
-      - key: EMAIL_USE_TLS
-        value: "True"
-      - key: DEFAULT_FROM_EMAIL
-        value: "singhshivankit76@gmail.com"
-
-      # AWS
-      - key: AWS_ACCESS_KEY_ID
-        value: "AKIAX6ZAF5RO4Z355YML"
-      - key: AWS_SECRET_ACCESS_KEY
-        value: "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"
-      - key: AWS_STORAGE_BUCKET_NAME
-        value: "school-mgmt-system-assignments"
-      - key: AWS_S3_REGION_NAME
-        value: "ap-south-1"

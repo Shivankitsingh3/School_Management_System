@@ -68,14 +68,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def get_absolute_url(self):
         return reverse("model_detail", kwargs={"pk": self.pk})
 
-    def save(self, *args, **kwargs):
-        if self.password and not any(
-            self.password.startswith(prefix)
-            for prefix in ['pbkdf2_sha256$', 'argon2$', 'bcrypt$', 'scrypt$', 'crypt$']
-        ):
-            self.set_password(self.password)
-
-        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'User'

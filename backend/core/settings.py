@@ -285,3 +285,6 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     'COMPONENT_SPLIT_REQUEST': True,
 }
+
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

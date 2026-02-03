@@ -26,13 +26,13 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, name, email, password, role, dob, mobile, city, **extra_fields):
-        extra_fields.setdefault('is_active', True)
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
 
-        user = self.create_user(name, email, password, role, dob,
-                                mobile, city, **extra_fields)
-        return user
+        extra_fields['is_active'] = True
+        extra_fields['is_staff'] = True
+        extra_fields['is_superuser'] = True
+
+        return self.create_user(name, email, password, role, dob, mobile, city, **extra_fields)
+
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -67,7 +67,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def get_absolute_url(self):
         return reverse("model_detail", kwargs={"pk": self.pk})
-    
+
     def save(self, *args, **kwargs):
         if self.password and not any(
             self.password.startswith(prefix)
@@ -76,7 +76,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             self.set_password(self.password)
 
         super().save(*args, **kwargs)
-
 
     class Meta:
         verbose_name = 'User'

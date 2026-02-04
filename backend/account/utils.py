@@ -42,14 +42,21 @@ def send_activation_email(user, request):
         html_content=html_content,
     )
     
-    api_key = os.getenv('SENDGRID_API_KEY')
-    print('SENDGRID KEY PRESENT:', bool(api_key))
+    api_key = os.getenv("SENDGRID_API_KEY")
 
-    sg = SendGridAPIClient(api_key)
-    response = sg.send(message)
-    
-    print('SENDGRID STATUS:', response.status_code)
-    print('SENDGRID BODY:', response.body)
+
+    print("SENDGRID KEY PRESENT:", bool(api_key))
+
+    try:
+        sg = SendGridAPIClient(api_key)
+        response = sg.send(message)
+
+        print("SENDGRID STATUS:", response.status_code)
+        print("SENDGRID BODY:", response.body)
+
+    except Exception as e:
+        print("SENDGRID ERROR:", str(e))
+
 
 
 password_reset_token_generator = PasswordResetTokenGenerator()
@@ -80,11 +87,17 @@ def send_password_reset_email(user, request):
         html_content=html_content,
     )
 
-    api_key = os.getenv('SENDGRID_API_KEY')
-    print('SENDGRID KEY PRESENT:', bool(api_key))
+    api_key = os.getenv("SENDGRID_API_KEY")
 
-    sg = SendGridAPIClient(api_key)
-    response = sg.send(message)
 
-    print('SENDGRID STATUS:', response.status_code)
-    print('SENDGRID BODY:', response.body)
+    print("SENDGRID KEY PRESENT:", bool(api_key))
+
+    try:
+        sg = SendGridAPIClient(api_key)
+        response = sg.send(message)
+
+        print("SENDGRID STATUS:", response.status_code)
+        print("SENDGRID BODY:", response.body)
+
+    except Exception as e:
+        print("SENDGRID ERROR:", str(e))

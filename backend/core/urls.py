@@ -1,8 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.http import JsonResponse
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 urlpatterns = [
+    path("", lambda request: JsonResponse({"status": "Backend running"})),
     path('admin/', admin.site.urls),
     path('sms/account/', include('account.urls')),
     path('sms/student/', include('student.urls')),

@@ -37,7 +37,10 @@ class RegisterView(APIView):
         
         try:
             from .utils import send_activation_email
-            send_activation_email(user, request)
+            import threading
+            thread = threading.Thread(
+            target=send_activation_email, args=(user, request), daemon=True)
+            thread.start()
         except Exception as e:
             print(f'Email failed to send: {e}')
             

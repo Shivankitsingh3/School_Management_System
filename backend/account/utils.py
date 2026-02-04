@@ -1,9 +1,12 @@
 from django.template.loader import render_to_string
-from django.core.mail import EmailMultiAlternatives
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.conf import settings
+import os
+
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 
 class EmailActivationTokenGenerator(PasswordResetTokenGenerator):
@@ -23,9 +26,7 @@ def generate_activation_link(user, request):
 
 def send_activation_email(user, request):
     activation_link = generate_activation_link(user, request)
-    subject = "Activate your account"
-    from_email = settings.DEFAULT_FROM_EMAIL
-    to = [user.email]
+
     html_content = render_to_string(
         "account/activation_email.html",
         {
@@ -33,9 +34,16 @@ def send_activation_email(user, request):
             "activation_link": activation_link,
         }
     )
-    email = EmailMultiAlternatives(subject, "", from_email, to)
-    email.attach_alternative(html_content, "text/html")
-    email.send()
+
+    message = Mail(
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to_emails=user.email,
+        subject="Activate your account",
+        html_content=html_content,
+    )
+
+    sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+    sg.send(message)
 
 
 password_reset_token_generator = PasswordResetTokenGenerator()
@@ -51,10 +59,6 @@ def generate_password_reset_link(user, request):
 def send_password_reset_email(user, request):
     reset_link = generate_password_reset_link(user, request)
 
-    subject = "Reset your password"
-    from_email = settings.DEFAULT_FROM_EMAIL
-    to = [user.email]
-
     html_content = render_to_string(
         "account/password_reset_email.html",
         {
@@ -63,7 +67,12 @@ def send_password_reset_email(user, request):
         }
     )
 
-    
-    email = EmailMultiAlternatives(subject, "", from_email, to)
-    email.attach_alternative(html_content, "text/html")
-    email.send()
+    message = Mail(
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to_emails=user.email,
+        subject="Reset your password",
+        html_content=html_content,
+    )
+
+    sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+    sg.send(message)

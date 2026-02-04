@@ -35,9 +35,6 @@ class RegisterView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         
-        user.is_active = True
-        user.save()
-        
         try:
             send_activation_email(user, request)
         except Exception as e:

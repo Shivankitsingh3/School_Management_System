@@ -16,13 +16,13 @@ class Student(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if not self.registration_id or self.registration_id.strip() == '':
-            if not self.pk:
-                super().save(*args, **kwargs)
-
-            self.registration_id = f'STU{self.pk:04d}'
-
+        is_new = self.pk is None
         super().save(*args, **kwargs)
+
+        if is_new and (not self.registration_id or self.registration_id.strip() == ""):
+            self.registration_id = f"STU{self.pk:04d}"
+            super().save(update_fields=["registration_id"])
+
 
     def __str__(self):
         classroom = self.classroom.name if self.classroom else 'No Class'

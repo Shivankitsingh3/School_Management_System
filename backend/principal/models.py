@@ -10,16 +10,13 @@ class Principal(models.Model):
         max_length=15, unique=True, editable=False, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        if not self.registration_id:
-            if self.pk:
-                self.registration_id = f'HOS{self.pk:04d}'
-            else:
-                super().save(*args, **kwargs)
-                self.registration_id = f'HOS{self.pk:04d}'
-                super().save(update_fields=['registration_id'])
-                return
-
+        is_new = self.pk is None
         super().save(*args, **kwargs)
+
+        if is_new and not self.registration_id:
+            self.registration_id = f"HOS{self.pk:04d}"
+            super().save(update_fields=["registration_id"])
+
 
     def __str__(self):
         return f'{self.user.name} {self.user.email} ({self.registration_id})'

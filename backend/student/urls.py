@@ -4,7 +4,6 @@ from .views import (
     StudentSelfProfileView,
     StudentDetailView,
 )
-from .views_fix import reset_student_sequence
 
 
 urlpatterns = [
@@ -23,7 +22,4 @@ urlpatterns = [
         StudentDetailView.as_view(),
         name='student_detail'
     ),
-    
-    path("reset-seq/", reset_student_sequence),
-
 ]

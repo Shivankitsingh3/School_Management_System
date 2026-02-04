@@ -201,7 +201,7 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 
 
-FRONTEND_URL = "http://localhost:5173"
+FRONTEND_URL = "https://school-management-system-pi-lac.vercel.app"
 
 
 GEMINI_API_KEY = 'AIzaSyA6piE93bOUfmOFUpkMRrVDca5SC4SpPbU'
@@ -305,3 +305,13 @@ SPECTACULAR_SETTINGS = {
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Celery Configuration
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://127.0.0.1:6379/0')
+CELERY_RESULT_BACKEND = os.getenv(
+    'CELERY_RESULT_BACKEND', 'redis://127.0.0.1:6379/0')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'

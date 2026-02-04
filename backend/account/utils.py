@@ -41,9 +41,15 @@ def send_activation_email(user, request):
         subject="Activate your account",
         html_content=html_content,
     )
+    
+    api_key = os.getenv('SENDGRID_API_KEY')
+    print('SENDGRID KEY PRESENT:', bool(api_key))
 
-    sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
-    sg.send(message)
+    sg = SendGridAPIClient(api_key)
+    response = sg.send(message)
+    
+    print('SENDGRID STATUS:', response.status_code)
+    print('SENDGRID BODY:', response.body)
 
 
 password_reset_token_generator = PasswordResetTokenGenerator()
@@ -74,5 +80,11 @@ def send_password_reset_email(user, request):
         html_content=html_content,
     )
 
-    sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
-    sg.send(message)
+    api_key = os.getenv('SENDGRID_API_KEY')
+    print('SENDGRID KEY PRESENT:', bool(api_key))
+
+    sg = SendGridAPIClient(api_key)
+    response = sg.send(message)
+
+    print('SENDGRID STATUS:', response.status_code)
+    print('SENDGRID BODY:', response.body)

@@ -33,7 +33,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'school-management-system-1mir.onrender.com',
-    'https://school-management-system-pi-lac.vercel.app/',
+    'school-management-system-pi-lac.vercel.app',
 ]
 
 

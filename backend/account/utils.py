@@ -1,11 +1,9 @@
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
-from django.core.mail import send_mail
-from django.utils.encoding import force_bytes, force_str
+from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.conf import settings
-import threading
 
 
 class EmailActivationTokenGenerator(PasswordResetTokenGenerator):
@@ -24,23 +22,20 @@ def generate_activation_link(user, request):
 
 
 def send_activation_email(user, request):
-    try:
-        activation_link = generate_activation_link(user, request)
-        subject = "Activate your account"
-        from_email = settings.DEFAULT_FROM_EMAIL
-        to = [user.email]
-        html_content = render_to_string(
-            "account/activation_email.html",
-            {
-                "name": user.name,
-                "activation_link": activation_link,
-            }
-        )
-        email = EmailMultiAlternatives(subject, "", from_email, to)
-        email.attach_alternative(html_content, "text/html")
-        email.send(fail_silently=True)
-    except Exception as e:
-        print(f'Activation email error: {str(e)}')
+    activation_link = generate_activation_link(user, request)
+    subject = "Activate your account"
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to = [user.email]
+    html_content = render_to_string(
+        "account/activation_email.html",
+        {
+            "name": user.name,
+            "activation_link": activation_link,
+        }
+    )
+    email = EmailMultiAlternatives(subject, "", from_email, to)
+    email.attach_alternative(html_content, "text/html")
+    email.send()
 
 
 password_reset_token_generator = PasswordResetTokenGenerator()
@@ -68,9 +63,7 @@ def send_password_reset_email(user, request):
         }
     )
 
-    def _send():
-        email = EmailMultiAlternatives(subject, "", from_email, to)
-        email.attach_alternative(html_content, "text/html")
-        email.send()
-
-    threading.Thread(target=_send).start()
+    
+    email = EmailMultiAlternatives(subject, "", from_email, to)
+    email.attach_alternative(html_content, "text/html")
+    email.send()

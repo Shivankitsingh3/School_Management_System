@@ -1,5 +1,4 @@
-from .utils import activation_token_generator
-from .tasks import send_activation_email_task, send_password_reset_email_task
+from .utils import activation_token_generator, send_activation_email
 from django.utils.http import urlsafe_base64_decode
 from rest_framework import status
 from rest_framework.generics import (
@@ -40,12 +39,9 @@ class RegisterView(APIView):
         user.save()
         
         try:
-            send_activation_email_task.apply_async(
-                args=(user.id, user.name, user.email),
-                countdown=5
-            )
+            send_activation_email(user, request)
         except Exception as e:
-            logger.error(f"Email task queued failed: {e}")
+            logger.error(f"Activation email failed: {e}")
             
         return Response(
             {"message": "Registration successful. Please check email to activate.",
@@ -134,13 +130,11 @@ class ForgotPasswordView(APIView):
         try:
             user = CustomUser.objects.get(email=email)
             try:
-                send_password_reset_email_task.apply_async(args=(user.id, user.name, user.email), countdown=5)
+                send_password_reset_email(user, request)
             except Exception as e:
-                logger.error(f'Email task queued failed: {e}')
+                logger.error(f'Password reset email failed: {e}')
         except CustomUser.DoesNotExist:
             pass
-
-        send_password_reset_email(user, request)
 
         return Response(
             {"message": "If this email exists, a reset link has been sent."},

@@ -36,12 +36,16 @@ class RegisterView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         
+        user.is_active = True
+        user.save()
         
-        send_activation_email_task(
-            user.id,
-            user.name,
-            user.email
-        )
+        try:
+            send_activation_email_task.apply_async(
+                args=(user.id, user.name, user.email),
+                countdown=5
+            )
+        except Exception as e:
+            logger.error(f"Email task queued failed: {e}")
             
         return Response(
             {"message": "Registration successful. Please check email to activate.",
@@ -129,7 +133,10 @@ class ForgotPasswordView(APIView):
 
         try:
             user = CustomUser.objects.get(email=email)
-            send_password_reset_email_task(user.id, user.name, user.email)
+            try:
+                send_password_reset_email_task.apply_async(args=(user.id, user.name, user.email), countdown=5)
+            except Exception as e:
+                logger.error(f'Email task queued failed: {e}')
         except CustomUser.DoesNotExist:
             pass
 

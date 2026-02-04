@@ -35,6 +35,9 @@ class RegisterView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         
+        user.is_active = True
+        user.save()
+        
         try:
             from .utils import send_activation_email
             import threading

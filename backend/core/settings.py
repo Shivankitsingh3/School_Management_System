@@ -191,11 +191,6 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
 }
 
-
-EMAIL_BACKEND = "django_sendgrid_v5.SendGridBackend"
-
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
 EMAIL_TIMEOUT = 10

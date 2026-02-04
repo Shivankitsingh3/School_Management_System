@@ -3,6 +3,7 @@ from account.models import CustomUser
 
 
 class Teacher(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user = models.OneToOneField(
         CustomUser, on_delete=models.CASCADE, related_name='teacher_profile')
     registration_id = models.CharField(

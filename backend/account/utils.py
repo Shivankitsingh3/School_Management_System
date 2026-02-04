@@ -23,25 +23,24 @@ def generate_activation_link(user, request):
     return f"{settings.FRONTEND_URL}/activate/{uid}/{token}"
 
 
-
 def send_activation_email(user, request):
-    activation_link = generate_activation_link(user, request)
-
-    subject = "Activate your account"
-    from_email = settings.DEFAULT_FROM_EMAIL
-    to = [user.email]
-
-    html_content = render_to_string(
-        "account/activation_email.html",
-        {
-            "name": user.name,
-            "activation_link": activation_link,
-        }
-    )
-
-    email = EmailMultiAlternatives(subject, "", from_email, to)
-    email.attach_alternative(html_content, "text/html")
-    email.send()
+    try:
+        activation_link = generate_activation_link(user, request)
+        subject = "Activate your account"
+        from_email = settings.DEFAULT_FROM_EMAIL
+        to = [user.email]
+        html_content = render_to_string(
+            "account/activation_email.html",
+            {
+                "name": user.name,
+                "activation_link": activation_link,
+            }
+        )
+        email = EmailMultiAlternatives(subject, "", from_email, to)
+        email.attach_alternative(html_content, "text/html")
+        email.send(fail_silently=True)
+    except Exception as e:
+        print(f'Activation email error: {str(e)}')
 
 
 password_reset_token_generator = PasswordResetTokenGenerator()

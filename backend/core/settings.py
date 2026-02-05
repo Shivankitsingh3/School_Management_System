@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_filters',
-    'account',
     'account.apps.AccountConfig',
     'teacher',
     'student',

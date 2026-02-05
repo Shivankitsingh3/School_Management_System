@@ -12,7 +12,7 @@ def create_role_profile(sender, instance, created, **kwargs):
         return
 
     if instance.role == "student":
-        student, created = Student.objects.get_or_create(user=instance)
+        student, _ = Student.objects.get_or_create(user=instance)
 
         classroom_id = getattr(instance, "_classroom_id", None)
 
@@ -22,7 +22,7 @@ def create_role_profile(sender, instance, created, **kwargs):
 
 
     elif instance.role == "teacher":
-        teacher, created = Teacher.objects.get_or_create(user=instance)
+        teacher, _ = Teacher.objects.get_or_create(user=instance)
 
         subjects = getattr(instance, "_preferred_subjects", [])
 

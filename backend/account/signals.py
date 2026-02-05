@@ -12,20 +12,24 @@ def create_role_profile(sender, instance, created, **kwargs):
         return
 
     if instance.role == "student":
-        Student.objects.get_or_crea(
-            user=instance,
-            defaults={
-                "classroom_id": getattr(instance, "_classroom_id", None)
-            }
-        )
+        student, created = Student.objects.get_or_create(user=instance)
+
+        classroom_id = getattr(instance, "_classroom_id", None)
+
+    if classroom_id and not student.classroom_id:
+        student.classroom_id = classroom_id
+        student.save(update_fields=["classroom"])
+
 
     elif instance.role == "teacher":
-        Teacher.objects.get_or_create(
-            user=instance,
-            defaults={
-                "preferred_subjects": getattr(instance, "_preferred_subjects", [])
-            }
-        )
+        teacher, created = Teacher.objects.get_or_create(user=instance)
+
+        subjects = getattr(instance, "_preferred_subjects", [])
+
+        if subjects and not teacher.preferred_subjects:
+            teacher.preferred_subjects = subjects
+            teacher.save(update_fields=["preferred_subjects"])
+
 
     elif instance.role == "principal":
         Principal.objects.get_or_create(user=instance)

@@ -10,8 +10,7 @@ class TeacherProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Teacher
-        fields = ['id', 'registration_id', 'user',
-                  'preferred_subjects']
+        fields = ['id', 'registration_id', 'user', 'preferred_subjects']
         read_only_fields = fields
 
 

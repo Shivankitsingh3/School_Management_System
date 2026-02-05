@@ -200,7 +200,7 @@ EMAIL_TIMEOUT = 10
 FRONTEND_URL = "https://school-management-system-pi-lac.vercel.app"
 
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = config("GEMINI_API_KEY")
 
 
 # # AWS Settings

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     'account',
+    'account.apps.AccountConfig',
     'teacher',
     'student',
     'classroom',

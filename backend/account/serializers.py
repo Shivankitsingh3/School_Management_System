@@ -68,13 +68,15 @@ class CustomUserRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('confirm_password')
         classroom_id = validated_data.pop('classroom', None)
-        preferred_subjects = validated_data.pop('preferred_subjects', None)
+        preferred_subjects = validated_data.pop('preferred_subjects', [])
         
-        user = CustomUser.objects.create_user(**validated_data)
-        
+        user = CustomUser(**validated_data)
+        user.set_password(validated_data['password'])
         
         user._classroom_id = classroom_id
         user._preferred_subjects = preferred_subjects
+        
+        user.save()
         
         return user
 
